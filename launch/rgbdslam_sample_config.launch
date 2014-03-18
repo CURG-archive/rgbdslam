@@ -38,7 +38,7 @@
     <!-- TF information settings -->
   	<param name="config/fixed_frame_name"              value="/map"/>
     <param name="config/ground_truth_frame_name"       value="/ground_truth_map"/><!--empty string if no ground truth-->
-    <param name="config/base_frame_name"               value="/openni_camera"/> <!-- /openni_camera for hand-held kinect. For robot, e.g., /base_link -->
+    <param name="config/base_frame_name"               value="/camera_link"/> <!-- /openni_camera for hand-held kinect. For robot, e.g., /base_link -->
     <param name="config/fixed_camera"                  value="true"/> <!--is the kinect fixed with respect to base, or can it be moved (false makes sense only if transform betw. base_frame and openni_camera is sent via tf)-->
 
     <!-- Visual Features, to activate GPU-based features see CMakeLists.txt -->

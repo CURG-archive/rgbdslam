@@ -158,12 +158,13 @@ IF (${USE_SIFT_GPU})
 	ENDIF (NOT ${sift_gpu_return} EQUAL 0)
 	
     FILE(COPY external/siftgpu/linux/bin/libsiftgpu.so DESTINATION ${CMAKE_BINARY_DIR}/lib/)
+    FILE(COPY external/siftgpu/linux/bin/libsiftgpu.so DESTINATION ../lib/)
 	
 	add_definitions(-DUSE_SIFT_GPU)
 	add_definitions(-DSIFT_GPU_MODE=$ENV{SIFT_GPU_MODE})
 
     add_library(siftgpu SHARED IMPORTED)
-    set_target_properties(siftgpu PROPERTIES IMPORTED_LOCATION ${CMAKE_BINARY_DIR}/lib/libsiftgpu.so)
+    set_target_properties(siftgpu PROPERTIES IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/external/siftgpu/linux/bin/libsiftgpu.so)
 ENDIF (${USE_SIFT_GPU})
 
 
