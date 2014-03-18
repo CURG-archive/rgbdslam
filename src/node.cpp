@@ -18,6 +18,7 @@
 #include "node.h"
 #include "transformation_estimation.h"
 #include <cmath>
+#include <pcl_conversions/pcl_conversions.h>
 #include "scoped_timer.h"
 #include <Eigen/Geometry>
 #include <pcl/common/transformation_from_correspondences.h>
@@ -73,7 +74,7 @@ Node::Node(const cv::Mat& visual,
   {
     pc_col = pointcloud_type::Ptr(new pointcloud_type());
   }
-  pc_col->header = depth_header;
+  pc_col->header = pcl_conversions::toPCL(depth_header);
 
 #ifdef USE_PCL_ICP
   if(ps->get<bool>("use_icp")){
@@ -163,9 +164,9 @@ Node::Node(const cv::Mat visual,
   filtered_pc_col(new pointcloud_type()),
 #endif
   flannIndex(NULL),
-  base2points_(tf::Transform::getIdentity(), point_cloud->header.stamp,ParameterServer::instance()->get<std::string>("base_frame_name"), point_cloud->header.frame_id),
-  ground_truth_transform_(tf::Transform::getIdentity(), point_cloud->header.stamp, ParameterServer::instance()->get<std::string>("ground_truth_frame_name"), ParameterServer::instance()->get<std::string>("base_frame_name")),
-  odom_transform_(tf::Transform::getIdentity(), point_cloud->header.stamp, "missing_odometry", point_cloud->header.frame_id),
+  base2points_(tf::Transform::getIdentity(), pcl_conversions::fromPCL(point_cloud->header).stamp,ParameterServer::instance()->get<std::string>("base_frame_name"), pcl_conversions::fromPCL(point_cloud->header).frame_id),
+  ground_truth_transform_(tf::Transform::getIdentity(), pcl_conversions::fromPCL(point_cloud->header).stamp, ParameterServer::instance()->get<std::string>("ground_truth_frame_name"), ParameterServer::instance()->get<std::string>("base_frame_name")),
+  odom_transform_(tf::Transform::getIdentity(), pcl_conversions::fromPCL(point_cloud->header).stamp, "missing_odometry", pcl_conversions::fromPCL(point_cloud->header).frame_id),
   initial_node_matches_(0)
 {
   //cv::namedWindow("matches");

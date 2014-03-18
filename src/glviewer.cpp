@@ -32,6 +32,7 @@
 #include "glviewer.h"
 #include "misc2.h"
 #include "scoped_timer.h"
+#include <pcl/common/distances.h>
 
 #ifndef GL_MULTISAMPLE
 #define GL_MULTISAMPLE  0x809D

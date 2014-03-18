@@ -21,6 +21,7 @@
 //#include <rgbdslam/CloudTransforms.h>
 #include "graph_manager.h"
 #include "misc.h"
+#include <pcl_conversions/pcl_conversions.h>
 //#include <sensor_msgs/PointCloud2.h>
 #include <QThread>
 #include <qtconcurrentrun.h>
@@ -453,10 +454,12 @@ bool GraphManager::nodeComparisons(Node* new_node,
       ROS_INFO("Comparing new node (%i) with previous node %i", new_node->id_, prev_frame->id_);
       mr = new_node->matchNodePair(prev_frame);
       if(mr.edge.id1 > 0 && mr.edge.id2 > 0) {//Found trafo
-        ros::Time time1 = prev_frame->pc_col->header.stamp;
-        ros::Time time2 = new_node->pc_col->header.stamp;
-        ros::Duration delta_time =  time2 - time1;
-        if(!isBigTrafo(mr.edge.mean) || !isSmallTrafo(mr.edge.mean, delta_time.toSec())){ //Found trafo, but bad trafo (too small to big)
+
+        double time1 = prev_frame->pc_col->header.stamp * 1.0e-6;
+        double time2 = new_node->pc_col->header.stamp * 1.0e-6;
+        double delta_time = time2 - time1;
+
+        if(!isBigTrafo(mr.edge.mean) || !isSmallTrafo(mr.edge.mean, delta_time)){ //Found trafo, but bad trafo (too small to big)
             ROS_WARN("Transformation not within bounds. Did not add as Node");
             //ROS_WARN("Transformation not within bounds. Only Adding Optimizer Edge");
             //addEdgeToG2O(mr.edge, prev_frame, new_node,  true, true, curr_motion_estimate); 
@@ -539,8 +542,8 @@ bool GraphManager::nodeComparisons(Node* new_node,
               ROS_INFO("new node has id %i", new_node->id_);
               assert(graph_[mr.edge.id1]);
 
-              ros::Duration delta_time = new_node->pc_col->header.stamp - graph_[mr.edge.id1]->pc_col->header.stamp;
-              if (isSmallTrafo(mr.edge.mean, delta_time.toSec()) &&
+              double delta_time = (new_node->pc_col->header.stamp - graph_[mr.edge.id1]->pc_col->header.stamp) * 1.0e-6;
+              if (isSmallTrafo(mr.edge.mean, delta_time) &&
                   addEdgeToG2O(mr.edge,graph_[mr.edge.id1],new_node, isBigTrafo(mr.edge.mean), mr.inlier_matches.size() > curr_best_result_.inlier_matches.size(), curr_motion_estimate))
                 { 
                   graph_[new_node->id_] = new_node; //Needs to be added
@@ -567,8 +570,8 @@ bool GraphManager::nodeComparisons(Node* new_node,
                 //mr.edge.informationMatrix *= geodesicDiscount(hypdij, mr);
               //ROS_INFO_STREAM("XX Information Matrix for Edge (" << mr.edge.id1 << "<->" << mr.edge.id2 << "\n" << mr.edge.informationMatrix);
 
-              ros::Duration delta_time = new_node->pc_col->header.stamp - graph_[mr.edge.id1]->pc_col->header.stamp;
-              if (isSmallTrafo(mr.edge.mean, delta_time.toSec()) &&
+              double delta_time = (new_node->pc_col->header.stamp - graph_[mr.edge.id1]->pc_col->header.stamp) * 1.0e-6;
+              if (isSmallTrafo(mr.edge.mean, delta_time) &&
                   addEdgeToG2O(mr.edge, node_to_compare, new_node, isBigTrafo(mr.edge.mean), mr.inlier_matches.size() > curr_best_result_.inlier_matches.size(), curr_motion_estimate))
               {
 #ifdef DO_FEATURE_OPTIMIZATION

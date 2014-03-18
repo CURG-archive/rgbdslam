@@ -3,3 +3,5 @@
 *.backup
 *.a
 *.so
+
+external/siftgpu/linux/bin/

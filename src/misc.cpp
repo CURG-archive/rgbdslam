@@ -15,6 +15,8 @@
  */
 #include <ros/ros.h>
 #include <tf/transform_datatypes.h>
+#include <pcl_conversions/pcl_conversions.h>
+#include <pcl/common/distances.h>
 #include <Eigen/Core>
 #include <QString>
 #include <QMatrix4x4>
@@ -554,8 +556,8 @@ pointcloud_type* createXYZRGBPointCloud (const sensor_msgs::ImageConstPtr& depth
 {
   ScopedTimer s(__FUNCTION__);
   pointcloud_type* cloud (new pointcloud_type() );
-  cloud->header.stamp     = depth_msg->header.stamp;
-  cloud->header.frame_id  = rgb_msg->header.frame_id;
+  cloud->header.stamp     = pcl_conversions::toPCL(depth_msg->header).stamp;
+  cloud->header.frame_id  = pcl_conversions::toPCL(rgb_msg->header).frame_id;
   cloud->is_dense         = false; //single point of view, 2d rasterized NaN where no depth value was found
 
   ParameterServer* ps = ParameterServer::instance();

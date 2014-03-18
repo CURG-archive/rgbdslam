@@ -157,10 +157,13 @@ IF (${USE_SIFT_GPU})
 		MESSAGE(FATAL_ERROR "SiftGPU cannot be compiled. Returned: ${sift_gpu_return}")
 	ENDIF (NOT ${sift_gpu_return} EQUAL 0)
 	
-	FILE(COPY external/siftgpu/linux/bin/libsiftgpu.so DESTINATION ../lib/)
+    FILE(COPY external/siftgpu/linux/bin/libsiftgpu.so DESTINATION ${CMAKE_BINARY_DIR}/lib/)
 	
 	add_definitions(-DUSE_SIFT_GPU)
 	add_definitions(-DSIFT_GPU_MODE=$ENV{SIFT_GPU_MODE})
+
+    add_library(siftgpu SHARED IMPORTED)
+    set_target_properties(siftgpu PROPERTIES IMPORTED_LOCATION ${CMAKE_BINARY_DIR}/lib/libsiftgpu.so)
 ENDIF (${USE_SIFT_GPU})
 
 
@@ -169,7 +172,7 @@ ENDIF (${USE_SIFT_GPU})
 # GICP ######################
 #############################
 IF (${USE_GICP})
-	SET(gicp_build_path ${CMAKE_SOURCE_DIR}/external/gicp/ann_1.1.2)
+    SET(gicp_build_path ${PROJECT_SOURCE_DIR}/external/gicp/ann_1.1.2)
   FILE(MAKE_DIRECTORY ${gicp_build_path}/lib/)
   MESSAGE("\n------------------------------------------------------------------\n")
 	MESSAGE("Compiling GICP...")
@@ -185,7 +188,7 @@ IF (${USE_GICP})
 		MESSAGE(FATAL_ERROR "GICP cannot be compiled. Returned: ${gicp_return}")
 	ENDIF (NOT ${gicp_return} EQUAL 0)
 	
-	FILE(COPY ${gicp_build_path}/lib/libANN.a DESTINATION ${CMAKE_SOURCE_DIR}/lib/)
+    FILE(COPY ${gicp_build_path}/lib/libANN.a DESTINATION ${PROJECT_SOURCE_DIR}/lib/)
 ENDIF (${USE_GICP})
 
 IF (${USE_GICP_BIN})
@@ -260,6 +263,7 @@ SET(G2O_LIBS cholmod cxsparse -lg2o_cli -lg2o_core
     -lg2o_solver_structure_only -lg2o_stuff -lg2o_types_data -lg2o_types_icp
     -lg2o_types_sba -lg2o_types_sclam2d -lg2o_types_sim3 -lg2o_types_slam2d
     -lg2o_types_slam3d)
+
 #SET(LIBS_LINK GL GLU -lgl2ps ${G2O_LIBS} ${QT_LIBRARIES} ${QT_QTOPENGL_LIBRARY} ${GLUT_LIBRARY} ${OPENGL_LIBRARY} ${OpenCV_LIBS})
 SET(LIBS_LINK GL GLU ${G2O_LIBS} ${QT_LIBRARIES} ${QT_QTOPENGL_LIBRARY} ${GLUT_LIBRARY} ${OPENGL_LIBRARY} ${OpenCV_LIBS} -lboost_signals -lrt -loctomap -loctomap_server -loctomath)
 
@@ -274,7 +278,7 @@ IF (${USE_GICP})
 ENDIF (${USE_GICP})
 #link libraries
 target_link_libraries(rgbdslam ${LIBS_LINK})
-target_link_libraries(rgbdslam ${PCL_LIBRARIES})
+target_link_libraries(rgbdslam ${catkin_LIBRARIES})
  
 IF (${USE_GICP})
   set(ROS_COMPILE_FLAGS ${ROS_COMPILE_FLAGS} -fpermissive)
