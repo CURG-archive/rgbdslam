@@ -21,7 +21,6 @@
 
   <!-- Dependencies needed to compile this package. -->
   <build_depend>tf</build_depend>
-  <build_depend>pcl</build_depend>
   <build_depend>rospy</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>rosbag</build_depend>
@@ -37,7 +36,6 @@
 
   <!-- Dependencies needed after this package is compiled. -->
   <run_depend>tf</run_depend>
-  <run_depend>pcl</run_depend>
   <run_depend>rospy</run_depend>
   <run_depend>roscpp</run_depend>
   <run_depend>rosbag</run_depend>
@@ -49,7 +47,7 @@
   <run_depend>octomap_ros</run_depend>
   <run_depend>geometry_msgs</run_depend>
   <run_depend>visualization_msgs</run_depend>
-  <run_depend>libpcl-all-dev</run_depend>
+  <run_depend>libpcl-all</run_depend>
 
   <!-- Dependencies needed only for running tests. -->
   <!-- <test_depend>tf</test_depend> -->

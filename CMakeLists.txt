@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(rgbdslam)
 # Load catkin and all dependencies required for this package
 # TODO: remove all from COMPONENTS that are not catkin packages.
-find_package(catkin REQUIRED COMPONENTS tf rospy roscpp rosbag pcl_ros cv_bridge sensor_msgs octomap_server octomap_ros geometry_msgs visualization_msgs eigen octomap_ros)
+find_package(catkin REQUIRED COMPONENTS tf rospy roscpp rosbag pcl_ros pcl_conversions cv_bridge sensor_msgs octomap_server octomap_ros geometry_msgs visualization_msgs eigen octomap_ros)
 
 # include_directories(include ${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS})#########################################################
 ### CONFIG ##############################################
@@ -98,6 +98,13 @@ find_package(octomap REQUIRED)
 include_directories(${OCTOMAP_INCLUDE_DIRS})
 link_directories(${OCTOMAP_LIBRARY_DIRS})
 link_libraries(${OCTOMAP_LIBRARIES})
+
+#############################
+# PCL #######################
+#############################
+find_package(PCL REQUIRED)
+include_directories(${PCL_INCLUDE_DIRS})
+link_directories(${PCL_LIBRARY_DIRS})
 
 #############################
 # Qt ########################
@@ -267,7 +274,7 @@ IF (${USE_GICP})
 ENDIF (${USE_GICP})
 #link libraries
 target_link_libraries(rgbdslam ${LIBS_LINK})
-
+target_link_libraries(rgbdslam ${PCL_LIBRARIES})
  
 IF (${USE_GICP})
   set(ROS_COMPILE_FLAGS ${ROS_COMPILE_FLAGS} -fpermissive)
@@ -282,7 +289,7 @@ generate_messages(
 # catkin_package parameters: http://ros.org/doc/groovy/api/catkin/html/dev_guide/generated_cmake_api.html#catkin-package
 # TODO: fill in what other packages will need to use this package
 catkin_package(
-    DEPENDS tf rospy roscpp rosbag pcl_ros cv_bridge sensor_msgs octomap_server octomap_ros geometry_msgs visualization_msgs eigen octomap_ros
+    DEPENDS tf rospy roscpp rosbag pcl_ros pcl_conversions cv_bridge sensor_msgs octomap_server octomap_ros geometry_msgs visualization_msgs eigen octomap_ros
     CATKIN_DEPENDS # TODO
     INCLUDE_DIRS # TODO include
     LIBRARIES # TODO
